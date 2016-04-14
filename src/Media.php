@@ -2,7 +2,7 @@
 
 namespace Spatie\MediaLibrary;
 
-use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model;
 use Spatie\MediaLibrary\Conversion\Conversion;
 use Spatie\MediaLibrary\Conversion\ConversionCollection;
 use Spatie\MediaLibrary\Helpers\File;
@@ -16,7 +16,7 @@ class Media extends Model
     const TYPE_IMAGE = 'image';
     const TYPE_PDF = 'pdf';
 
-    protected $guarded = ['id', 'disk', 'file_name', 'size', 'model_type', 'model_id'];
+    protected $guarded = ['_id', 'disk', 'file_name', 'size', 'model_type', 'model_id'];
 
     /**
      * The attributes that should be casted to native types.
