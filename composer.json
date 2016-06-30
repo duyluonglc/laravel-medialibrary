@@ -1,5 +1,5 @@
 {
-  "name": "spatie/laravel-medialibrary",
+  "name": "spatie/laravel-medialibrary-mongodb",
   "description": "Associate files with Eloquent models",
   "keywords": [
     "spatie",
