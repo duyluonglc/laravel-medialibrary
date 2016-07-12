@@ -2,6 +2,7 @@
   "name": "luongnd/laravel-medialibrary-mongodb",
   "description": "Associate files with Eloquent models",
   "keywords": [
+    "spatie",
     "laravel-medialibrary",
     "media",
     "cms",

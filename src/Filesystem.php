@@ -96,7 +96,14 @@ class Filesystem
      */
     public function removeFiles(Media $media)
     {
-        $this->filesystem->disk($media->disk)->deleteDirectory($this->getMediaDirectory($media));
+        $mediaDirectory = $this->getMediaDirectory($media);
+
+        $conversionsDirectory = $this->getConversionDirectory($media);
+
+        collect([$mediaDirectory, $conversionsDirectory])
+            ->each(function ($directory) use ($media) {
+                $this->filesystem->disk($media->disk)->deleteDirectory($directory);
+            });
     }
 
     /*
@@ -124,5 +131,13 @@ class Filesystem
         $this->filesystem->disk($media->disk)->makeDirectory($directory);
 
         return $directory;
+    }
+
+    /*
+     * Return the directory where all conversions of the given media are stored.
+     */
+    public function getConversionDirectory(Media $media) : string
+    {
+        return $this->getMediaDirectory($media, true);
     }
 }

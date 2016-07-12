@@ -2,8 +2,8 @@
 
 namespace Spatie\MediaLibrary;
 
-use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\File;
+use ImagickPixel;
 use Spatie\Glide\GlideImage;
 use Spatie\MediaLibrary\Conversion\Conversion;
 use Spatie\MediaLibrary\Conversion\ConversionCollection;
@@ -14,8 +14,6 @@ use Spatie\PdfToImage\Pdf;
 
 class FileManipulator
 {
-    use DispatchesJobs;
-
     /**
      * Create all derived files for the given media.
      *
@@ -27,7 +25,7 @@ class FileManipulator
             return;
         }
 
-        if ($media->type === Media::TYPE_PDF && !class_exists('Imagick')) {
+        if (in_array($media->type, [Media::TYPE_PDF, Media::TYPE_SVG]) && !class_exists('Imagick')) {
             return;
         }
 
@@ -57,7 +55,11 @@ class FileManipulator
         app(Filesystem::class)->copyFromMediaLibrary($media, $copiedOriginalFile);
 
         if ($media->type == Media::TYPE_PDF) {
-            $copiedOriginalFile = $this->convertToImage($copiedOriginalFile);
+            $copiedOriginalFile = $this->convertPdfToImage($copiedOriginalFile);
+        }
+
+        if ($media->type == Media::TYPE_SVG) {
+            $copiedOriginalFile = $this->convertSvgToImage($copiedOriginalFile);
         }
 
         foreach ($conversions as $conversion) {
@@ -111,11 +113,25 @@ class FileManipulator
         return $tempDirectory;
     }
 
-    protected function convertToImage(string $pdfFile) : string
+    protected function convertPdfToImage(string $pdfFile) : string
     {
         $imageFile = string($pdfFile)->pop('.').'.jpg';
 
         (new Pdf($pdfFile))->saveImage($imageFile);
+
+        return $imageFile;
+    }
+
+    protected function convertSvgToImage(string $svgFile) : string
+    {
+        $imageFile = string($svgFile)->pop('.').'.png';
+
+        $image = new \Imagick();
+        $image->readImage($svgFile);
+        $image->setBackgroundColor(new ImagickPixel('none'));
+        $image->setImageFormat('png32');
+
+        file_put_contents($imageFile, $image);
 
         return $imageFile;
     }
@@ -133,6 +149,6 @@ class FileManipulator
             $job->onQueue($customQueue);
         }
 
-        $this->dispatch($job);
+        app('Illuminate\Contracts\Bus\Dispatcher')->dispatch($job);
     }
 }

@@ -2,6 +2,32 @@
 
 All notable changes to `laravel-medialibrary` will be documented in this file
 
+##4.5.0 - 2016-07-09
+
+- added `medialibrary:clean` command
+- the `medialibrary:regenerate` will continue regenerating files even if a primary media file is missing
+
+##4.4.1 - 2016-07-08
+- Fix regeneration command (see #260). It'll now properly regenerate files for all passed media id's
+
+##4.4.0 - 2016-07-06
+- Add support for converting svg's
+
+##4.3.0 - 2016-06-23
+- Add Lumen compatibility
+
+##4.2.1 - 2016-06-03
+- Delete the conversion directory even when it is not underneath the media directory
+
+##4.2 - 2016-06-03
+- Added the `src` option for the `fm` conversion parameter
+
+##4.1 - 2016-06-02
+- Added `shouldDeletePreservingMedia`
+
+##4.0.1 - 2016-04-25
+- Fixed queued jobs in Laravel 5.1
+
 ##4.0.0 - 2016-04-13
 - add support for Glide 1.0
 - added `addMediaFromRequest` method
